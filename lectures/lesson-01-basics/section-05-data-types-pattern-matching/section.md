@@ -1,5 +1,7 @@
 # Lesson 01 · Section 05 — Data Types & Pattern Matching
 
+[한국어(KO)](section.ko.md)
+
 Summary
 - Create simple enums and tuple structs; branch with `match` and guards.
 

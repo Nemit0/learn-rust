@@ -1,5 +1,7 @@
 # Lesson 01 · Section 04 — Ownership & Borrowing
 
+[한국어(KO)](section.ko.md)
+
 Summary
 - Borrow data immutably and mutably; return references with lifetimes.
 

@@ -1,5 +1,7 @@
 # Lesson 02 · Section 01 — Smart Pointers (Box, Rc)
 
+[한국어(KO)](section.ko.md)
+
 Summary
 - Practice building a tiny recursive list using `Box` and share data using `Rc`.
 

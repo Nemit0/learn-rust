@@ -1,5 +1,7 @@
 # Lesson 02 · Section 03 — Iterators (Custom + Adapters)
 
+[한국어(KO)](section.ko.md)
+
 Summary
 - Build a custom `Iterator` and compose it with adapters to collect results.
 

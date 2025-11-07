@@ -1,5 +1,7 @@
 # Lesson 01 · Section 08 — Error Handling
 
+[한국어(KO)](section.ko.md)
+
 Summary
 - Return and propagate errors using `Result` and the `?` operator.
 

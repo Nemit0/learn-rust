@@ -1,5 +1,7 @@
 # Lesson 01 · Section 01 — Variables and Mutability
 
+[한국어(KO)](section.ko.md)
+
 Goal
 - Practice declaring variables, mutability, and using expressions.
 

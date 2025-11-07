@@ -1,5 +1,7 @@
 # Lesson 01 · Section 07 — Collections & Iterators
 
+[한국어(KO)](section.ko.md)
+
 Summary
 - Use vectors, slices, iterator adapters, and `HashMap`.
 

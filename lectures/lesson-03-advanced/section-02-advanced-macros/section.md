@@ -1,5 +1,7 @@
 # Lesson 03 · Section 02 — Advanced Declarative Macros
 
+[한국어(KO)](section.ko.md)
+
 Summary
 - Write data‑producing macros with repetition and trailing comma support.
 
@@ -48,4 +50,3 @@ Validation
 Common Pitfalls
 - Forgetting `$(,)?` to accept a trailing comma.
 - Using `$x:ident` instead of `$x:expr` and rejecting complex expressions.
-

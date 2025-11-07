@@ -1,5 +1,7 @@
 # Lesson 03 · Section 01 — Unsafe Basics (Raw Pointers)
 
+[한국어(KO)](section.ko.md)
+
 Summary
 - Use `unsafe` in a controlled way to read memory via raw pointers and to build slices manually.
 
@@ -50,4 +52,3 @@ Validation
 Common Pitfalls
 - Forgetting to assert `mid <= xs.len()` when splitting.
 - Creating overlapping mutable slices — always use non-overlapping ranges.
-

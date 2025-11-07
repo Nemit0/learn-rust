@@ -1,5 +1,7 @@
 # Lesson 02 · Section 02 — Concurrency (Threads and Join)
 
+[한국어(KO)](section.ko.md)
+
 Summary
 - Practice spawning threads, joining them, and aggregating results safely.
 

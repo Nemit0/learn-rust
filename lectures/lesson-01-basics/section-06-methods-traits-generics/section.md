@@ -1,5 +1,7 @@
 # Lesson 01 · Section 06 — Methods, Traits, Generics
 
+[한국어(KO)](section.ko.md)
+
 Summary
 - Implement methods, define/implement a simple trait, and write a generic function.
 

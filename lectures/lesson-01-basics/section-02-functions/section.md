@@ -1,5 +1,7 @@
 # Lesson 01 · Section 02 — Functions
 
+[한국어(KO)](section.ko.md)
+
 Goal
 - Practice writing functions and returning values.
 

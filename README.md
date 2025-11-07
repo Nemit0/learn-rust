@@ -1,5 +1,7 @@
 Learn Rust — Lectures and Grader
 
+[한국어(KO)](README.ko.md)
+
 Overview
 - A Cargo workspace of small, focused Rust exercises organized as lectures and sections.
 - Each section contains:

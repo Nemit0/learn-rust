@@ -1,5 +1,7 @@
 # Lesson 01 · Section 03 — Control Flow
 
+[한국어(KO)](section.ko.md)
+
 Summary
 - Practice branching with `if`/`match` and simple loops.
 

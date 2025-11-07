@@ -1,5 +1,7 @@
 # Lesson 01 · Section 09 — Modules, Crates, Workspaces
 
+[한국어(KO)](section.ko.md)
+
 Summary
 - Organize code in modules and re-export a clean public API.
 
