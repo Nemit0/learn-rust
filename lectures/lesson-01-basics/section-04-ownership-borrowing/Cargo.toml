@@ -1,0 +1,8 @@
+[package]
+name = "lesson01_section04_ownership_borrowing"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+

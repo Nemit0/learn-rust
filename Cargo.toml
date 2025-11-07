@@ -1,0 +1,18 @@
+[workspace]
+members = [
+    "lectures/lesson-01-basics/section-01-variables",
+    "lectures/lesson-01-basics/section-02-functions",
+    "lectures/lesson-01-basics/section-03-control-flow",
+    "lectures/lesson-01-basics/section-04-ownership-borrowing",
+    "lectures/lesson-01-basics/section-05-data-types-pattern-matching",
+    "lectures/lesson-01-basics/section-06-methods-traits-generics",
+    "lectures/lesson-01-basics/section-07-collections-iterators",
+    "lectures/lesson-01-basics/section-08-error-handling",
+    "lectures/lesson-01-basics/section-09-modules-workspaces",
+    "lectures/lesson-02-intermediate/section-01-smart-pointers",
+    "lectures/lesson-02-intermediate/section-02-concurrency",
+    "lectures/lesson-02-intermediate/section-03-iterators-advanced",
+    "lectures/lesson-03-advanced/section-01-unsafe-basics",
+    "lectures/lesson-03-advanced/section-02-advanced-macros",
+]
+resolver = "2"

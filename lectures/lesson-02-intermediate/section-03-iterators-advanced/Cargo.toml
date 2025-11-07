@@ -1,0 +1,8 @@
+[package]
+name = "lesson02_section03_iterators_advanced"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+

@@ -1,0 +1,8 @@
+[package]
+name = "lesson01_section08_error_handling"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+
