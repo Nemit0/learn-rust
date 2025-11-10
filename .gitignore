@@ -1,7 +1,10 @@
 /target/
+**/target/
 **/*.rs.bk
 /.idea/
 /.vscode/
 **/*.swp
 AGENTS.md
 .claude
+scripts/baseline/
+tools/grader_ui/Cargo.lock

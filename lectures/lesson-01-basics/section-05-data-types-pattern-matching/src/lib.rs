@@ -29,4 +29,3 @@ pub fn safe_div(a: i32, b: i32) -> Option<i32> {
     // Hint: early return None when b == 0
     unimplemented!("return Some(a / b) when b != 0")
 }
-

@@ -18,13 +18,11 @@ function Write-Act($msg)   { Write-Host $msg -ForegroundColor Yellow }
 function Write-Warn($msg)  { Write-Host $msg -ForegroundColor DarkYellow }
 function Write-ErrMsg($msg){ Write-Host $msg -ForegroundColor Red }
 
-function Get-LibFiles {
+function Ensure-LecturesExists {
     if (-not (Test-Path $lecturesRoot)) {
         Write-ErrMsg "Lectures folder not found at '$lecturesRoot'"
         exit 1
     }
-    Get-ChildItem -Path $lecturesRoot -Recurse -File -Filter 'lib.rs' |
-        Where-Object { $_.FullName -match "(\\|/)src(\\|/)lib\.rs$" }
 }
 
 function Get-RelativePath([string]$basePath, [string]$targetPath) {
@@ -94,43 +92,38 @@ function Git-RestoreFile($relPath, $ref) {
     return $true
 }
 
-Write-Info "Reset libs utility"
+Write-Info "Reset lectures utility"
 Write-Info ("Repo root: {0}" -f $repoRoot)
 
-$files = @(Get-LibFiles)
-if ($files.Count -eq 0) {
-    Write-Warn "No lib.rs files found under lectures/"
-    exit 0
-}
+Ensure-LecturesExists
 
 if ($Init) {
-    Write-Info "Initializing baseline snapshot from current files..."
-    foreach ($f in $files) {
-        $rel = Get-RelativePath -basePath $repoRoot -targetPath $f.FullName
-        $dest = Join-Path $baselineRoot $rel
-        Ensure-Directory (Split-Path -Parent $dest)
-        if ($DryRun) {
-            Write-Act ("Would snapshot: {0} -> {1}" -f $rel, ([System.IO.Path]::GetRelativePath($repoRoot, $dest)))
-        } else {
-            Copy-Item -LiteralPath $f.FullName -Destination $dest -Force
-            Write-Act ("Snapshotted: {0}" -f $rel)
-        }
+    Write-Info "Initializing baseline snapshot of entire 'lectures/' tree..."
+    $destLectures = Join-Path $baselineRoot 'lectures'
+    Ensure-Directory $destLectures
+    if ($DryRun) {
+        Write-Act "Would snapshot: lectures/ -> scripts/baseline/lectures/"
+    } else {
+        if (Test-Path $destLectures) { $null = Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $destLectures }
+        Ensure-Directory $destLectures
+        Copy-Item -Recurse -Force -Path (Join-Path $lecturesRoot '*') -Destination $destLectures
+        Write-Act "Snapshotted: lectures/"
     }
-    Write-Info "Baseline initialized in scripts/baseline."
+    Write-Info "Baseline initialized in scripts/baseline/lectures."
     exit 0
 }
 
 $usedGit = $false
 if ($GitRef) {
     if (In-GitRepo) {
-        Write-Info ("Restoring from git ref: {0}" -f $GitRef)
-        foreach ($f in $files) {
-            $rel = Get-RelativePath -basePath $repoRoot -targetPath $f.FullName
-            if ($DryRun) {
-                Write-Act ("Would git-restore {0} from {1}" -f $rel, $GitRef)
-            } else {
-                $ok = Git-RestoreFile -relPath $rel -ref $GitRef
-                if (-not $ok) { Write-ErrMsg ("Failed to restore {0} from {1}" -f $rel, $GitRef) }
+        Write-Info ("Restoring entire 'lectures/' from git ref: {0}" -f $GitRef)
+        if ($DryRun) {
+            Write-Act ("Would git-restore lectures/ from {0}" -f $GitRef)
+        } else {
+            $git = (Get-Command git -ErrorAction Stop).Source
+            $p = Start-Process -FilePath $git -ArgumentList @('-C', $repoRoot, 'restore', '--worktree', '--source', $GitRef, '--', 'lectures') -PassThru -NoNewWindow -Wait
+            if ($p.ExitCode -ne 0) {
+                & $git -C $repoRoot checkout $GitRef -- lectures | Out-Null
             }
         }
         $usedGit = $true
@@ -140,25 +133,18 @@ if ($GitRef) {
 }
 
 if (-not $usedGit) {
-    if (-not (Test-Path $baselineRoot)) {
-        Write-ErrMsg "No baseline found at scripts/baseline and no -GitRef provided."
+    $baselineLectures = Join-Path $baselineRoot 'lectures'
+    if (-not (Test-Path $baselineLectures)) {
+        Write-ErrMsg "No baseline found at scripts/baseline/lectures and no -GitRef provided."
         Write-ErrMsg "Run:  ./scripts/reset_libs.ps1 -Init   to snapshot the current starter state."
         exit 1
     }
-    Write-Info "Restoring from local baseline snapshot..."
-    foreach ($f in $files) {
-        $rel = Get-RelativePath -basePath $repoRoot -targetPath $f.FullName
-        $src = Join-Path $baselineRoot $rel
-        if (-not (Test-Path $src)) {
-            Write-Warn ("Missing baseline for {0}; skipping" -f $rel)
-            continue
-        }
-        if ($DryRun) {
-            Write-Act ("Would restore: {0} <- baseline" -f $rel)
-        } else {
-            Copy-Item -LiteralPath $src -Destination $f.FullName -Force
-            Write-Act ("Restored: {0}" -f $rel)
-        }
+    Write-Info "Restoring entire 'lectures/' from local baseline snapshot..."
+    if ($DryRun) {
+        Write-Act "Would restore: lectures/ <- baseline"
+    } else {
+        Copy-Item -Recurse -Force -Path (Join-Path $baselineLectures '*') -Destination $lecturesRoot
+        Write-Act "Restored: lectures/"
     }
 }
 

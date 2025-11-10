@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Reset all lectures/**/src/lib.rs back to a baseline snapshot or a git ref.
+# Reset the entire lectures/ tree back to a baseline snapshot or a git ref.
 #
 # Usage:
 #   ./scripts/reset_libs.sh --init            # snapshot current files as baseline
@@ -31,67 +31,54 @@ act()  { printf '\033[33m%s\033[0m\n' "$*"; }
 warn() { printf '\033[33m%s\033[0m\n' "$*"; }
 err()  { printf '\033[31m%s\033[0m\n' "$*"; }
 
-mapfile -t files < <(find "$lectures_root" -type f -path '*/src/lib.rs' | sort)
-if [[ ${#files[@]} -eq 0 ]]; then
-  warn "No lib.rs files found under lectures/"
-  exit 0
+if [[ ! -d "$lectures_root" ]]; then
+  err "Lectures folder not found at '$lectures_root'"
+  exit 1
 fi
 
 if $init; then
-  info "Initializing baseline snapshot from current files..."
-  for f in "${files[@]}"; do
-    rel="${f#"$repo_root/"}"
-    dest="$baseline_root/$rel"
-    mkdir -p "$(dirname "$dest")"
-    if $dry_run; then
-      act "Would snapshot: $rel -> scripts/baseline/$rel"
-    else
-      cp -f "$f" "$dest"
-      act "Snapshotted: $rel"
-    fi
-  done
-  info "Baseline initialized in scripts/baseline."
+  info "Initializing baseline snapshot of entire 'lectures/' tree..."
+  dest_lectures="$baseline_root/lectures"
+  mkdir -p "$dest_lectures"
+  if $dry_run; then
+    act "Would snapshot: lectures/ -> scripts/baseline/lectures/"
+  else
+    rm -rf "$dest_lectures"
+    mkdir -p "$dest_lectures"
+    cp -R "$lectures_root/." "$dest_lectures"
+    act "Snapshotted: lectures/"
+  fi
+  info "Baseline initialized in scripts/baseline/lectures."
   exit 0
 fi
 
 used_git=false
 if [[ -n "$git_ref" ]] && git -C "$repo_root" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  info "Restoring from git ref: $git_ref"
-  for f in "${files[@]}"; do
-    rel="${f#"$repo_root/"}"
-    if $dry_run; then
-      act "Would git-restore $rel from $git_ref"
-    else
-      if ! git -C "$repo_root" restore --worktree --source "$git_ref" -- "$rel" 2>/dev/null; then
-        git -C "$repo_root" checkout "$git_ref" -- "$rel"
-      fi
+  info "Restoring entire 'lectures/' from git ref: $git_ref"
+  if $dry_run; then
+    act "Would git-restore lectures/ from $git_ref"
+  else
+    if ! git -C "$repo_root" restore --worktree --source "$git_ref" -- lectures 2>/dev/null; then
+      git -C "$repo_root" checkout "$git_ref" -- lectures
     fi
-  done
+  fi
   used_git=true
 fi
 
 if ! $used_git; then
-  if [[ ! -d "$baseline_root" ]]; then
-    err "No baseline found at scripts/baseline and no --git-ref provided."
+  baseline_lectures="$baseline_root/lectures"
+  if [[ ! -d "$baseline_lectures" ]]; then
+    err "No baseline found at scripts/baseline/lectures and no --git-ref provided."
     err "Run:  ./scripts/reset_libs.sh --init   to snapshot the current starter state."
     exit 1
   fi
-  info "Restoring from local baseline snapshot..."
-  for f in "${files[@]}"; do
-    rel="${f#"$repo_root/"}"
-    src="$baseline_root/$rel"
-    if [[ ! -f "$src" ]]; then
-      warn "Missing baseline for $rel; skipping"
-      continue
-    fi
-    if $dry_run; then
-      act "Would restore: $rel <- baseline"
-    else
-      cp -f "$src" "$f"
-      act "Restored: $rel"
-    fi
-  done
+  info "Restoring entire 'lectures/' from local baseline snapshot..."
+  if $dry_run; then
+    act "Would restore: lectures/ <- baseline"
+  else
+    cp -R "$baseline_lectures/." "$lectures_root"
+    act "Restored: lectures/"
+  fi
 fi
 
 info "Done."
-

@@ -34,7 +34,7 @@ Resetting to Starter State
 - Snapshot current starter files (do this once):
   - Windows: `./scripts/reset_libs.ps1 -Init`
   - macOS/Linux: `bash ./scripts/reset_libs.sh --init`
-- Restore all `lectures/**/src/lib.rs` from the snapshot:
+- Restore the entire `lectures/` tree from the snapshot:
   - Windows: `./scripts/reset_libs.ps1`
   - macOS/Linux: `bash ./scripts/reset_libs.sh`
 - If your project is in git and you want to restore from a branch or commit instead of the snapshot:
@@ -49,7 +49,32 @@ Adding New Sections
 Notes
 - `answer.rs` is not compiled; it’s just for reference.
 - Keep exercises small and focused; tests should express the learning goal.
-- The reset scripts only touch `src/lib.rs` files under `lectures/`.
+- The reset scripts now reset the entire `lectures/` tree (docs, tests, lib, etc.). They overwrite from the baseline snapshot or a git ref but do not remove extra files not present in the snapshot.
+
+Grader UI (optional)
+- A minimal desktop UI is available under `tools/grader_ui` (not part of the workspace to keep grading fast).
+- Build and run it from repo root:
+  - Windows: `cargo run --manifest-path tools/grader_ui/Cargo.toml`
+  - macOS/Linux: `cargo run --manifest-path tools/grader_ui/Cargo.toml`
+- Features:
+  - Discover packages under `lectures/` using `cargo metadata`.
+  - Grade Selected (runs `cargo test -p ...`), Grade All (workspace).
+  - Snapshot/Restore baseline via `scripts/reset_libs.*`.
+  - Restore from a git ref (e.g., `origin/main`).
+
+Basic usage
+- Click `Discover Packages` to list all `lectures/**` crates.
+- Select some packages (or `Select All`).
+- Click `Grade Selected` to run tests for those crates, or `Grade All (workspace)` to run the full workspace.
+- To reset starter files:
+  - `Snapshot Baseline` creates/updates a snapshot at `scripts/baseline/lectures/`.
+  - `Restore Baseline` copies the snapshot back onto `lectures/`.
+  - `Restore from Git Ref` resets `lectures/` from a ref (e.g., `origin/main`).
+
+Notes
+- The UI streams command output into the lower pane and prints an exit status when done.
+- It runs your installed `cargo`, PowerShell (`.ps1`) on Windows, or `bash` (`.sh`) on macOS/Linux.
+- If you see a workspace error when running the UI, ensure the root `Cargo.toml` contains `exclude = ["tools/grader_ui"]`.
 
 Lesson Plan
 - See `lesson_plan/overview.md` for the full course outline, authoring guidelines, and roadmap.

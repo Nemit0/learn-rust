@@ -15,4 +15,7 @@ members = [
     "lectures/lesson-03-advanced/section-01-unsafe-basics",
     "lectures/lesson-03-advanced/section-02-advanced-macros",
 ]
+exclude = [
+    "tools/grader_ui",
+]
 resolver = "2"
